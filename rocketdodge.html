@@ -1,0 +1,98 @@
+<!doctype html>
+
+<head>
+    <title>Meteor Dodge</title>
+</head>
+
+<body>
+    <canvas id="gameCanvas" width="400" height="500"></canvas>
+    <script>
+        var canvas, canvasContext, imgAssests;
+
+        window.onload = function() {
+            canvas = document.getElementById('gameCanvas');
+            canvasContext = canvas.getContext('2d');
+
+            imgAssests = loadImgAssests();
+
+            document.addEventListener('keydown', keyPressed); //keyPressed = made function 
+
+            document.addEventListener('keyup', keyReleased); //keyReleased = made function 
+
+            setInterval(mainLoop, 1000 / 50);
+        }
+        var playerXpos = 175;
+        var playerYpos = 400;
+        var playerWidth = 40;
+        var playerHeight = 65;
+        var playerXspeed = 8;
+        var playerYspeed = 8;
+
+        const LEFT_KEY = 37;
+        const RIGHT_KEY = 39;
+
+        var leftArrowPressed = false;
+        var rightArrowPressed = false;
+
+        function mainLoop() {
+            colorRect(0, 0, canvas.width, canvas.height, 'black')
+//            colorRect(playerXpos, playerYpos, 20, 20, 'white')//
+            drawPics(img.player,playerXpos,playerYpos,playerWidth,playerHeight);
+
+            playerMove();
+        }
+
+        function keyPressed(evt) {
+
+            console.log(evt.keyCode) // in console with state the number associated with the key pressed 
+            if (evt.keyCode == LEFT_KEY) { // 37 should be a const   
+                leftArrowPressed = true; // opposite should be done for keyRelease function  
+            }
+            if (evt.keyCode == RIGHT_KEY) { // 37 should be a const   
+                rightArrowPressed = true; // opposite should be done for keyRelease function  
+            }
+
+        }
+
+        function keyReleased(evt) {
+
+            console.log(evt.keyCode) // in console with state the number associated with the key pressed 
+            if (evt.keyCode == 37) { // 37 should be a const   
+                leftArrowPressed = false; // opposite should be done for keyRelease function  
+            }
+            if (evt.keyCode == RIGHT_KEY) { // 37 should be a const   
+                rightArrowPressed = false; // opposite should be done for keyRelease function  
+            }
+
+        }
+
+        function loadImgAssests() {
+
+            img = {}; // making an img object
+            img.player = new Image(); // creating an new player object that is an image
+            img.player.src = 'images/rocket.png' // locates the images 
+
+            return img; // makes the img object to be useable to draw an image 
+
+        }
+
+        function playerMove() {
+            if (leftArrowPressed) {
+                playerXpos -= playerXspeed;
+            }
+            if (rightArrowPressed) {
+                playerXpos += playerXspeed;
+            }
+        }
+        
+        function drawPics(src,x,y,w,h){
+            canvasContext.drawImage(src,x,y,w,h);
+        }
+
+        function colorRect(x, y, w, h, c) {
+            canvasContext.fillStyle = c;
+            canvasContext.fillRect(x, y, w, h);
+        }
+
+    </script>
+</body>
