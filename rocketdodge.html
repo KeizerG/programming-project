@@ -78,9 +78,15 @@
 
         function playerMove() {
             if (leftArrowPressed) {
+                if (playerXpos < 0){
+                    playerXpos = canvas.width - playerWidth
+                    }
                 playerXpos -= playerXspeed;
             }
             if (rightArrowPressed) {
+                if (playerXpos > canvas.width){
+                    playerXpos = 0;
+                }
                 playerXpos += playerXspeed;
             }
         }
