@@ -19,6 +19,10 @@
 
             document.addEventListener('keyup', keyReleased); //keyReleased = made function 
 
+            for (i = 0; i <= boulderCount; i++) {
+                boulderArray.push(randomBoulder());
+            }
+            
             setInterval(mainLoop, 1000 / 50);
         }
         var playerXpos = 175;
@@ -34,17 +38,79 @@
         var leftArrowPressed = false;
         var rightArrowPressed = false;
 
+//        var boulderXpos = 10;
+//        var boulderYpos = 10;
+//        var boulderYspeed = 1;
+//        var boulderXspeed = -0;
+//        var boulderWidth = 50;
+//        var boulderHeight = 50;
+
+        var boulderArray = [];
+        var boulderCount = 1;
+
         function mainLoop() {
             colorRect(0, 0, canvas.width, canvas.height, 'black')
-//            colorRect(playerXpos, playerYpos, 20, 20, 'white')//
-            drawPics(img.player,playerXpos,playerYpos,playerWidth,playerHeight);
-
+            //            colorRect(playerXpos, playerYpos, 20, 20, 'white')//
+            drawPics(img.background, 0, 0, canvas.width, canvas.height);
+            drawPics(img.player, playerXpos, playerYpos, playerWidth, playerHeight);
+            
             playerMove();
+            boulderRender();
+            boulderMovement();
+        }
+
+        function boulderMovement() {
+            boulderArray.forEach(function(boulder, index) {
+
+                boulder.boulderXpos += boulder.boulderXspeed
+                boulder.boulderYpos += boulder.boulderYspeed
+
+                if (boulder.boulderXpos > canvas.width - boulder.boulderWidth) {
+                    boulder.boulderXspeed *= -1;
+                }
+                if (boulder.boulderXpos < 0) {
+                    boulder.boulderXspeed *= -1;
+                }
+                if (boulder.boulderYpos > canvas.height - boulder.boulderHeight) {
+                    boulder.boulderYpos = 0 - boulder.boulderHeight;
+                }
+                
+                if(boulder.boulderYpos > playerYpos - boulder.boulderHeight && 
+                   boulder.boulderYpos < playerYpos + playerHeight && 
+                   boulder.boulderXpos > playerXpos - boulder.boulderWidth ){
+                   console.log('hit');
+                }
+            });
+        }
+
+        function boulderRender() {
+            boulderArray.forEach(function(boulder, index) {
+                drawPics(img.boulder, boulder.boulderXpos, boulder.boulderYpos, boulder.boulderWidth, boulder.boulderHeight); // boulder
+            });
+        }
+
+
+        function randomBoulder() {
+            var boulderXpos = 10;
+            var boulderYpos = 10;
+            var boulderYspeed = Math.floor(Math.random() * (5 - 1) + 1);
+            var boulderXspeed = Math.floor(Math.random() * (5 - 1) + 1);
+            var boulderWidth = 50;
+            var boulderHeight = 50;
+            
+            var randBoulder = {
+                boulderWidth: boulderWidth,
+                boulderHeight: boulderHeight,
+                boulderXpos: boulderXpos,
+                boulderYpos: boulderYpos,
+                boulderXspeed: boulderXspeed,
+                boulderYspeed: boulderYspeed
+            }
+            return randBoulder;
         }
 
         function keyPressed(evt) {
 
-            console.log(evt.keyCode) // in console with state the number associated with the key pressed 
             if (evt.keyCode == LEFT_KEY) { // 37 should be a const   
                 leftArrowPressed = true; // opposite should be done for keyRelease function  
             }
@@ -56,7 +122,6 @@
 
         function keyReleased(evt) {
 
-            console.log(evt.keyCode) // in console with state the number associated with the key pressed 
             if (evt.keyCode == 37) { // 37 should be a const   
                 leftArrowPressed = false; // opposite should be done for keyRelease function  
             }
@@ -71,28 +136,32 @@
             img = {}; // making an img object
             img.player = new Image(); // creating an new player object that is an image
             img.player.src = 'images/rocket.png' // locates the images 
-
+            img.boulder = new Image(); // creating an new player object that is an image
+            img.boulder.src = 'images/boulder.png' // locates the images 
+            img.background = new Image(); // creating an new player object that is an image
+            img.background.src = 'images/background.png' // locates the images
+            
             return img; // makes the img object to be useable to draw an image 
 
         }
 
         function playerMove() {
             if (leftArrowPressed) {
-                if (playerXpos < 0){
+                if (playerXpos < 0) {
                     playerXpos = canvas.width - playerWidth
-                    }
+                }
                 playerXpos -= playerXspeed;
             }
             if (rightArrowPressed) {
-                if (playerXpos > canvas.width){
+                if (playerXpos > canvas.width) {
                     playerXpos = 0;
                 }
                 playerXpos += playerXspeed;
             }
         }
-        
-        function drawPics(src,x,y,w,h){
-            canvasContext.drawImage(src,x,y,w,h);
+
+        function drawPics(src, x, y, w, h) {
+            canvasContext.drawImage(src, x, y, w, h);
         }
 
         function colorRect(x, y, w, h, c) {
