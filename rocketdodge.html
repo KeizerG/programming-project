@@ -24,38 +24,41 @@
             }
 
             setInterval(mainLoop, 1000 / 50);
-        
-        var ySpeedMin = 0;
-        var ySpeedMax = 1;
-        var xSpeedMin = 0;
-        var xSpeedMax = 1;
-        
-        console.log(ySpeedMin + ' ySpeedMin')    
-            
-        var userName = '';
-        while(userName == null || userName == ''){
-            userName = prompt('Enter user name') || ''
-        }
-        
-        
-        var difficulty = '';
-        while(difficulty != 'easy' && difficulty == '' || difficulty == null){
-            difficulty = prompt('easy,medium,hard,god?', 'god') || ''; 
-        }
-            
-        if(difficulty == 'easy'){
-            ySpeedMax = 5;
-            ySpeedMin = 1;
-            xSpeedMax = 5;
-            xSpeedMin = 1;
-        } else{
-            ySpeedMax = 15;
-            ySpeedMin = 11;
-            xSpeedMax = 15;
-            xSpeedMin = 11;
-        }
-        
-        
+
+            var ySpeedMin = 0;
+            var ySpeedMax = 1;
+            var xSpeedMin = 0;
+            var xSpeedMax = 1;
+
+
+            console.log(ySpeedMin + ' ySpeedMin')
+
+            var userName = '';
+            while (userName == null || userName == '') {
+                userName = prompt('Enter user name') || ''
+            }
+
+
+            var difficulty = '';
+
+            while (difficulty != 'easy' && difficulty != 'medium' && difficulty != 'hard' && difficulty != 'god') {
+                difficulty = prompt('easy,medium,hard,god?', 'god') || '';
+                difficulty = difficulty.toLowerCase();
+            }
+
+            if (difficulty == 'easy') {
+                ySpeedMax = 5;
+                ySpeedMin = 1;
+                xSpeedMax = 5;
+                xSpeedMin = 1;
+            } else {
+                ySpeedMax = 15;
+                ySpeedMin = 11;
+                xSpeedMax = 15;
+                xSpeedMin = 11;
+            }
+
+
         }
         var playerXpos = 175;
         var playerYpos = 400;
@@ -69,6 +72,7 @@
 
         var leftArrowPressed = false;
         var rightArrowPressed = false;
+        var score = 0;
 
         //        var boulderXpos = 10;
         //        var boulderYpos = 10;
@@ -80,15 +84,27 @@
         var boulderArray = [];
         var boulderCount = 1;
 
-        function mainLoop() {
-            colorRect(0, 0, canvas.width, canvas.height, 'black')
-            //            colorRect(playerXpos, playerYpos, 20, 20, 'white')//
-            drawPics(img.background, 0, 0, canvas.width, canvas.height);
-            drawPics(img.player, playerXpos, playerYpos, playerWidth, playerHeight);
+        var gameRun = true;
 
-            playerMove();
-            boulderRender();
-            boulderMovement();
+        function mainLoop() {
+
+            if (gameRun) {
+
+                colorRect(0, 0, canvas.width, canvas.height, 'black')
+                //            colorRect(playerXpos, playerYpos, 20, 20, 'white')//
+                drawPics(img.background, 0, 0, canvas.width, canvas.height);
+                drawPics(img.player, playerXpos, playerYpos, playerWidth, playerHeight);
+                colorText('Score: ' + score, 30, 30, 'red', '20px Arial');
+
+                playerMove();
+                boulderRender();
+                boulderMovement();
+
+            } else {
+                colorRect(0, 0, canvas.width, canvas.height, 'black')
+
+            }
+
         }
 
         function boulderMovement() {
@@ -105,11 +121,12 @@
                 }
                 if (boulder.boulderYpos > canvas.height - boulder.boulderHeight) {
                     boulder.boulderYpos = 0 - boulder.boulderHeight;
+                    score++;
                 }
 
                 if (boulder.boulderYpos > playerYpos - boulder.boulderHeight &&
                     boulder.boulderYpos < playerYpos + playerHeight &&
-                    boulder.boulderXpos > playerXpos - boulder.boulderWidth && 
+                    boulder.boulderXpos > playerXpos - boulder.boulderWidth &&
                     boulder.boulderXpos < playerXpos + playerWidth) {
                     playerXpos = canvas.width / 2 - playerWidth / 2;
                 }
@@ -122,7 +139,7 @@
             });
         }
 
-//        console.log(ySpeedMax)
+        //        console.log(ySpeedMax)
         function randomBoulder() {
             var boulderXpos = 10;
             var boulderYpos = 10;
@@ -200,6 +217,12 @@
         function colorRect(x, y, w, h, c) {
             canvasContext.fillStyle = c;
             canvasContext.fillRect(x, y, w, h);
+        }
+
+        function colorText(msg, x, y, c, f) {
+            canvasContext.fillStyle = c;
+            canvasContext.fillText(msg, x, y);
+            canvasContext.font = f;
         }
 
     </script>
